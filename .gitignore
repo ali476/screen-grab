@@ -342,3 +342,16 @@ healthchecksdb
 
 # Backup folder for Package Reference Convert tool in Visual Studio 2017
 MigrationBackup/
+/scrgrab/bin/Release/app.publish
+/scrgrab/bin/x64/Release/scrgrab.exe.CodeAnalysisLog.xml
+/scrgrab/bin/Release/scrgrab.vshost.exe
+/scrgrab/bin/Release/scrgrab.vshost.exe.config
+/scrgrab/bin/Release/scrgrab.exe.CodeAnalysisLog.xml
+/scrgrab/bin/Release/scrgrab.exe.config
+/scrgrab/bin/Release/ScrGrab.7z
+/scrgrab/bin/Release/scrgrab.exe.lastcodeanalysissucceeded
+/scrgrab/bin/Release/scrgrab.vshost.application
+/scrgrab/bin/Release/scrgrab.vshost.exe.manifest
+/scrgrab/bin/x64/Release/app.publish/scrgrab.exe
+/scrgrab/bin/x64/Release/scrgrab.exe.config
+/scrgrab/bin/x64/Release/scrgrab.exe.lastcodeanalysissucceeded

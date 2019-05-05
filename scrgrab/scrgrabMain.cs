@@ -82,7 +82,7 @@ namespace scrgrab
         private void CaptureScreen()
         {
             Capture c = new Capture(Configuration.Filename);
-            c.capture();
+            c.capture(screens: Classes.Capture.Parse(Configuration.Screen));
         }
 
         private void MinimiseToTray()
@@ -131,6 +131,7 @@ namespace scrgrab
         {
             FolderBrowserDialog fbd = new FolderBrowserDialog();
 
+            fbd.SelectedPath = Configuration.WorkingFolder;
             DialogResult result = fbd.ShowDialog();
 
             if (result == System.Windows.Forms.DialogResult.OK)

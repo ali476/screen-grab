@@ -1,6 +1,5 @@
-﻿using System;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
+﻿using scrgrab.Classes;
+using System;
 
 namespace scrgrab.Timer
 {
@@ -48,7 +47,6 @@ namespace scrgrab.Timer
 
         #region Private Data
         private bool m_locked = false; // set while timer is locked for update
-        private bool m_pending; // set when called from StartPending
         private TimeSpan m_start_time = TimeSpan.FromSeconds(8 * 3600); // default start time of 0800hrs
         private TimeSpan m_end_time = TimeSpan.FromSeconds(18 * 3600 + 30 * 60); // default end time of 1830hrs
         private TimeSpan m_interval = TimeSpan.FromSeconds(15 * 60); // default interval of 15 mins
@@ -112,43 +110,18 @@ namespace scrgrab.Timer
         }
 
         /// <summary>
-        /// start the timer; this starts the timer using the operational values 
-        /// previously provided when the class was first created or subsequently set via properties. If Start() is
-        /// not within operational times, then it calls StartPending() to set the correct due time for the next operational time start
+        /// start the timer; this calls GetNextStartTime to calculate the length of the timer interval
+        /// which could be either the value of Interval or, if Now is after the EndTime, a calulated value 
+        /// until the next StartTime
         /// </summary>
         public void Start()
         {
             if (!m_locked)
             {
-                // if already running, first call stop
                 if (Started)
                     Stop();
-                // decide how to start
-                if (!IsOperational())
-                    StartPending();
-                else
-                {
-                    m_pending = false;
-                    m_timer.Interval = m_interval.TotalMilliseconds;
-                    m_timer.Elapsed += BDSTimerCallback;
-                    m_timer.AutoReset = true;
-                    m_timer.Enabled = true;
-                }
-            }
-        }
 
-        /// <summary>
-        /// start pending, set the timer's due time (i.e. the time it first fires) to the next operstational start time
-        /// </summary>
-        public void StartPending()
-        {
-            if (!m_locked)
-            {
-                if (Started)
-                    Stop();
-                // calculate number of seconds elapsed between now and next due time
-                m_pending = true;
-                m_timer.Interval = GetNextOperationalStart();
+                m_timer.Interval = GetNextStartTime();
                 m_timer.Elapsed += BDSTimerCallback;
                 m_timer.AutoReset = true;
                 m_timer.Enabled = true;
@@ -162,7 +135,6 @@ namespace scrgrab.Timer
         {
             if (!m_locked && Started)
             {
-                m_pending = false;
                 m_timer.Enabled = false;
                 m_timer.Elapsed -= BDSTimerCallback;
             }
@@ -204,24 +176,23 @@ namespace scrgrab.Timer
         /// calculate number of milliseconds between now and the next time timer is due to become operational
         /// </summary>
         /// <returns></returns>
-        private double GetNextOperationalStart()
+        private double GetNextStartTime()
         {
-            // next_due = time-to-midnight + start-time
-            TimeSpan time_to_midnight = new TimeSpan(24, 0, 0).Subtract(DateTime.Now.TimeOfDay);
-            return (time_to_midnight + StartTime).TotalMilliseconds;
+            TimeSpan result = m_interval;
+            if (!IsOperational())
+            {
+                // next_due = time-to-midnight + start-time
+                TimeSpan time_to_midnight = new TimeSpan(24, 0, 0).Subtract(DateTime.Now.TimeOfDay);
+                result = time_to_midnight + StartTime;
+            }
+            Logger.Log(Configuration.WorkingFolder, "Next start: " + result.ToString());
+            return result.TotalMilliseconds;
         }
 
         private void BDSTimerCallback(Object source, System.Timers.ElapsedEventArgs e)
         {
             // fire application-supplied call back
             m_onTimer?.Invoke();
-
-            // if no longer operational, stop the timer and start a new pending timer
-            if (!IsOperational())
-            {
-                Stop();
-                StartPending();
-            }
         }
 
     }

@@ -11,6 +11,7 @@ namespace scrgrab.Classes
     /// </summary>
     class ImageManager
     {
+        private const String c_image_db = "image.db";
         private String m_folder;
         private List<ImageInfo> m_images = new List<ImageInfo>();
         private int m_index = -1;
@@ -72,7 +73,7 @@ namespace scrgrab.Classes
                 list.Add(String.Format("{0}$_${1}", file.Folder, file.File));
             }
 
-            File.WriteAllLines(m_folder + "\\Images.db", list);
+            File.WriteAllLines(Path.Combine(m_folder, c_image_db), list);
         }
 
         /// <summary>
@@ -82,7 +83,11 @@ namespace scrgrab.Classes
         public void getImages(DateTime date)
         {
             m_images.Clear();
-            List<String> files = File.ReadAllLines(m_folder + "\\Images.db").ToList<String>();
+
+            if (!File.Exists(Path.Combine(m_folder, c_image_db)))
+                enumerateToFile();
+
+            List<String> files = File.ReadAllLines(Path.Combine(m_folder, c_image_db)).ToList<String>();
 
             foreach (String file in files)
             {
@@ -93,7 +98,7 @@ namespace scrgrab.Classes
                     inf.Path = split[0];
                     inf.Name = split[1];
                     // the left 8 characters are date, next 6 are HH:mm:ss
-                    inf.Time = DateTime.ParseExact(Path.GetFileNameWithoutExtension(inf.Name), "yyyyMMddHHmmss", System.Globalization.CultureInfo.InvariantCulture);
+                    inf.Time = DateTime.ParseExact(inf.Name.Substring(0, 14), "yyyyMMddHHmmss", System.Globalization.CultureInfo.InvariantCulture);
                     if (inf.Time.Date == date.Date)
                         m_images.Add(inf);
                 }

@@ -109,6 +109,7 @@
     <Compile Include="Classes\Configuration.cs" />
     <Compile Include="Classes\ImageManager.cs" />
     <Compile Include="Classes\Logger.cs" />
+    <Compile Include="Classes\Screens.cs" />
     <Compile Include="Timer\BDSTimer.cs" />
     <Compile Include="Classes\Viewer.cs">
       <SubType>Form</SubType>

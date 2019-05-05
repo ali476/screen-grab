@@ -78,9 +78,9 @@
             this.labelTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelTitle.Location = new System.Drawing.Point(143, 85);
             this.labelTitle.Name = "labelTitle";
-            this.labelTitle.Size = new System.Drawing.Size(59, 20);
+            this.labelTitle.Size = new System.Drawing.Size(149, 20);
             this.labelTitle.TabIndex = 8;
-            this.labelTitle.Text = "<title>";
+            this.labelTitle.Text = "No images found!";
             // 
             // label2
             // 

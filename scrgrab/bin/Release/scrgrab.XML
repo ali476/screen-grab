@@ -8,6 +8,9 @@
             <summary>
             Capture a screen image
             </summary>
+            <summary>
+            Enumeration deining the types of screen
+            </summary>
         </member>
         <member name="M:scrgrab.Classes.Capture.#ctor(System.String)">
             <summary>
@@ -15,10 +18,32 @@
             </summary>
             <param name="filename"></param>
         </member>
-        <member name="M:scrgrab.Classes.Capture.capture">
+        <member name="M:scrgrab.Classes.Capture.capture(scrgrab.Classes.Capture.Screens)">
             <summary>
             capture the current screen image and save as the filename that was provided when this object was created.
             </summary>
+        </member>
+        <member name="T:scrgrab.Classes.Capture.Screens">
+            <summary>
+            Types of screen
+            </summary>
+        </member>
+        <member name="F:scrgrab.Classes.Capture.Screens.All">
+            <summary>
+            All screens
+            </summary>
+        </member>
+        <member name="F:scrgrab.Classes.Capture.Screens.Primary">
+            <summary>
+            Only the primary screen
+            </summary>
+        </member>
+        <member name="M:scrgrab.Classes.Capture.Parse(System.String)">
+            <summary>
+            Parse a string to it's equivalent Screens enum or return a default if the string cannot be parsed
+            </summary>
+            <param name="value">the value to parse</param>
+            <returns>parsed value or a default</returns>
         </member>
         <member name="T:scrgrab.Classes.Configuration">
             <summary>
@@ -200,14 +225,9 @@
         </member>
         <member name="M:scrgrab.Timer.BDSTimer.Start">
             <summary>
-            start the timer; this starts the timer using the operational values 
-            previously provided when the class was first created or subsequently set via properties. If Start() is
-            not within operational times, then it calls StartPending() to set the correct due time for the next operational time start
-            </summary>
-        </member>
-        <member name="M:scrgrab.Timer.BDSTimer.StartPending">
-            <summary>
-            start pending, set the timer's due time (i.e. the time it first fires) to the next operstational start time
+            start the timer; this calls GetNextStartTime to calculate the length of the timer interval
+            which could be either the value of Interval or, if Now is after the EndTime, a calulated value 
+            until the next StartTime
             </summary>
         </member>
         <member name="M:scrgrab.Timer.BDSTimer.Stop">
@@ -215,7 +235,7 @@
             stops the timer by deleting it from the timer queue
             </summary>
         </member>
-        <member name="M:scrgrab.Timer.BDSTimer.GetNextOperationalStart">
+        <member name="M:scrgrab.Timer.BDSTimer.GetNextStartTime">
             <summary>
             calculate number of milliseconds between now and the next time timer is due to become operational
             </summary>
