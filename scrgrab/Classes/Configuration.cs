@@ -48,6 +48,9 @@ namespace scrgrab.Classes
         /// </summary>
         public static String WorkingFolder { get => GetWorkingFolder(); set => SetWorkingFolder(value); }
 
+        /// <summary>
+        /// which screen to track
+        /// </summary>
         public static String Screen { get => GetScreen(); set => SetScreen(value); }
 
         /// <summary>
@@ -134,7 +137,9 @@ namespace scrgrab.Classes
         public static void Log()
         {
             string value = string.Format("Start: {0}, End: {1}, Interval: {2}",
-                Configuration.StartTime.ToString(), Configuration.EndTime.ToString(), Configuration.Interval.ToString());
+                Configuration.StartTime.ToString(@"hh\:mm"), 
+                Configuration.EndTime.ToString(@"hh\:mm"), 
+                Configuration.Interval.ToString());
             Logger.Log(Configuration.WorkingFolder, value);
         }
 

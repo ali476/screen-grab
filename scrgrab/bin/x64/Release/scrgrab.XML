@@ -80,6 +80,11 @@
             the working folder
             </summary>
         </member>
+        <member name="P:scrgrab.Classes.Configuration.Screen">
+            <summary>
+            which screen to track
+            </summary>
+        </member>
         <member name="M:scrgrab.Classes.Configuration.GetOperationalFrom(System.Int32@,System.Int32@)">
             <summary>
             calculates the time when an event should start operation. Date part is always set to 1/1/2000

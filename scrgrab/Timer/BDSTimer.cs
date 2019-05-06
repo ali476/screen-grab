@@ -185,7 +185,7 @@ namespace scrgrab.Timer
                 TimeSpan time_to_midnight = new TimeSpan(24, 0, 0).Subtract(DateTime.Now.TimeOfDay);
                 result = time_to_midnight + StartTime;
             }
-            Logger.Log(Configuration.WorkingFolder, "Next start: " + result.ToString());
+            Logger.Log(Configuration.WorkingFolder, "Next interval: " + (DateTime.Now.TimeOfDay + result).ToString(@"hh\:mm"));
             return result.TotalMilliseconds;
         }
 
