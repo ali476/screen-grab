@@ -125,14 +125,27 @@
             Manage list of images
             </summary>
         </member>
-        <member name="P:scrgrab.Classes.ImageManager.Images">
-            <summary>
-            access to images property
-            </summary>
-        </member>
         <member name="T:scrgrab.Classes.ImageManager.ImageInfo">
             <summary>
             nested class to hold details of each image
+            </summary>
+        </member>
+        <member name="M:scrgrab.Classes.ImageManager.ImageInfo.DateOf(System.DateTime)">
+            <summary>
+            Check if the image is of the given date
+            </summary>
+            <param name="date"></param>
+            <returns>bool</returns>
+        </member>
+        <member name="M:scrgrab.Classes.ImageManager.ImageInfo.SetDateFromString(System.String)">
+            <summary>
+            Set the value of <see cref="P:scrgrab.Classes.ImageManager.ImageInfo.ImageDateTime"/> from the supplied string value provided it is of the correct format and length
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="P:scrgrab.Classes.ImageManager.Images">
+            <summary>
+            access to images property
             </summary>
         </member>
         <member name="M:scrgrab.Classes.ImageManager.#ctor(System.String)">
@@ -141,22 +154,41 @@
             </summary>
             <param name="folder">String</param>
         </member>
-        <member name="M:scrgrab.Classes.ImageManager.enumerate(System.String)">
+        <member name="M:scrgrab.Classes.ImageManager.Enumerate(System.String)">
             <summary>
             static enumerate method to run the enumeration in a thread
             </summary>
             <param name="folder">String</param>
         </member>
-        <member name="M:scrgrab.Classes.ImageManager.enumerateToFile">
+        <member name="M:scrgrab.Classes.ImageManager.EnumerateToFile">
             <summary>
             enumerate folder/file list to a file
             </summary>
         </member>
-        <member name="M:scrgrab.Classes.ImageManager.getImages(System.DateTime)">
+        <member name="M:scrgrab.Classes.ImageManager.GetImages(System.DateTime)">
             <summary>
             get a list of available images for the given date
             </summary>
-            <param name="date">DateTime</param>
+            <param name="forDate">DateTime</param>
+        </member>
+        <member name="M:scrgrab.Classes.ImageManager.IndexOfByTime(System.Int32)">
+            <summary>
+            find the first image for the given <paramref name="hour"/>
+            </summary>
+            <param name="hour"></param>
+            <returns>index</returns>
+        </member>
+        <member name="M:scrgrab.Classes.ImageManager.NextImage">
+            <summary>
+            Get the next, or last, image
+            </summary>
+            <returns><see cref="T:scrgrab.Classes.ImageManager.ImageInfo"/></returns>
+        </member>
+        <member name="M:scrgrab.Classes.ImageManager.PrevImage">
+            <summary>
+            Get the previous, or first, image
+            </summary>
+            <returns><see cref="T:scrgrab.Classes.ImageManager.ImageInfo"/></returns>
         </member>
         <member name="M:scrgrab.Classes.Logger.#ctor(System.String)">
             <summary>

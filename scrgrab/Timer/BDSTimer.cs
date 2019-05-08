@@ -60,7 +60,7 @@ namespace scrgrab.Timer
         public TimeSpan EndTime { get => m_end_time; set => SetEndTime(value); }
         public TimeSpan StartTime { get => m_start_time; set => SetStartTime(value); }
         public TimeSpan Interval { get => m_interval; set => SetInterval(value); }
-        public bool Started => m_timer.Enabled;
+        public bool Started => m_timer == null ? false : m_timer.Enabled;
         public OnTimerEvent OnTimer { get => m_onTimer; set => m_onTimer = value; }
         #endregion
 

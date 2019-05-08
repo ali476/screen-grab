@@ -9,57 +9,37 @@ namespace scrgrab.Classes
     /// <summary>
     /// Manage list of images
     /// </summary>
-    class ImageManager
+    partial class ImageManager
     {
         private const String c_image_db = "image.db";
         private String m_folder;
-        private List<ImageInfo> m_images = new List<ImageInfo>();
         private int m_index = -1;
 
         /// <summary>
         /// access to images property
         /// </summary>
-        public List<ImageInfo> Images { get { return m_images; } }
-
-        /// <summary>
-        /// nested class to hold details of each image
-        /// </summary>
-        public class ImageInfo
-        {
-            public String Filename { get { return Path + "\\" + Name; } }
-            public String Path { get; set; }
-            public DateTime Time { get; set; }
-            public String Name { get; set; }
-
-            public override String ToString()
-            {
-                return this.Time.ToString("dd MMM yyyy HH:mm");
-            }
-        }
+        public List<ImageInfo> Images { get; } = new List<ImageInfo>();
 
         /// <summary>
         /// default constructor
         /// </summary>
         /// <param name="folder">String</param>
-        public ImageManager(String folder)
-        {
-            this.m_folder = folder;
-        }
+        public ImageManager(String folder) => this.m_folder = folder;
 
         /// <summary>
         /// static enumerate method to run the enumeration in a thread
         /// </summary>
         /// <param name="folder">String</param>
-        public static void enumerate(String folder)
+        public static void Enumerate(String folder)
         {
             ImageManager im = new ImageManager(folder);
-            Task.Factory.StartNew(() => im.enumerateToFile());
+            Task.Factory.StartNew(() => im.EnumerateToFile());
         }
 
         /// <summary>
         /// enumerate folder/file list to a file
         /// </summary>
-        public void enumerateToFile()
+        public void EnumerateToFile()
         {
             List<String> list = new List<string>();
 
@@ -79,13 +59,13 @@ namespace scrgrab.Classes
         /// <summary>
         /// get a list of available images for the given date
         /// </summary>
-        /// <param name="date">DateTime</param>
-        public void getImages(DateTime date)
+        /// <param name="forDate">DateTime</param>
+        public void GetImages(DateTime forDate)
         {
-            m_images.Clear();
+            Images.Clear();
 
             if (!File.Exists(Path.Combine(m_folder, c_image_db)))
-                enumerateToFile();
+                EnumerateToFile();
 
             List<String> files = File.ReadAllLines(Path.Combine(m_folder, c_image_db)).ToList<String>();
 
@@ -94,44 +74,56 @@ namespace scrgrab.Classes
                 String[] split = file.Split(new String[] { "$_$" }, StringSplitOptions.RemoveEmptyEntries);
                 if (split.Length > 1)
                 {
-                    ImageInfo inf = new ImageInfo();
-                    inf.Path = split[0];
-                    inf.Name = split[1];
-                    // the left 8 characters are date, next 6 are HH:mm:ss
-                    inf.Time = DateTime.ParseExact(inf.Name.Substring(0, 14), "yyyyMMddHHmmss", System.Globalization.CultureInfo.InvariantCulture);
-                    if (inf.Time.Date == date.Date)
-                        m_images.Add(inf);
+                    ImageInfo inf = new ImageInfo() { Path = split[0], Name = split[1] } ;
+                    inf.SetDateFromString(split[1]);
+                    // dates match?
+                    if (inf.DateOf(forDate))
+                    {
+                        Images.Add(inf);
+                    }
                 }
             }
 
             // finally sort by datetime
-            m_images.Sort(delegate (ImageInfo c1, ImageInfo c2) { return c1.Time.CompareTo(c2.Time); });
+            Images.Sort(delegate (ImageInfo c1, ImageInfo c2) { return c1.ImageDateTime.CompareTo(c2.ImageDateTime); });
         }
 
-        public int indexOfByTime(int hour)
+        /// <summary>
+        /// find the first image for the given <paramref name="hour"/>
+        /// </summary>
+        /// <param name="hour"></param>
+        /// <returns>index</returns>
+        public int IndexOfByTime(int hour)
         {
-            for (int x = 0; x < m_images.Count; x++)
-                if (m_images[x].Time.Hour == hour)
+            for (int x = 0; x < Images.Count; x++)
+                if (Images[x].ImageDateTime.Hour == hour)
                     return x;
             return -1;
         }
 
-        public ImageInfo nextImage()
+        /// <summary>
+        /// Get the next, or last, image
+        /// </summary>
+        /// <returns><see cref="ImageInfo"/></returns>
+        public ImageInfo NextImage()
         {
-            if (m_images.Count < 0)
+            if (Images.Count < 0)
                 return null;
-            m_index = (m_index == -1) ? 0 : (m_index < m_images.Count - 1) ? m_index + 1 : m_index;
-            return m_images[m_index];
+            m_index = (m_index == -1) ? 0 : (m_index < Images.Count - 1) ? m_index + 1 : m_index;
+            return Images[m_index];
         }
 
-        public ImageInfo prevImage()
+        /// <summary>
+        /// Get the previous, or first, image
+        /// </summary>
+        /// <returns><see cref="ImageInfo"/></returns>
+        public ImageInfo PrevImage()
         {
-            if (m_images.Count < 0)
+            if (Images.Count < 0)
                 return null;
             m_index = (m_index == -1) ? 0 : (m_index > 0) ? m_index - 1 : m_index;
-            return m_images[m_index];
+            return Images[m_index];
         }
-
 
         private List<String> enumerateFolders()
         {

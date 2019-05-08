@@ -56,7 +56,7 @@ namespace scrgrab.Classes
 
         private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
         {
-            m_imageManager.getImages(datePicker.Value);
+            m_imageManager.GetImages(datePicker.Value);
 
             // set the time combo to first hour
             int hr, mn;
@@ -64,7 +64,7 @@ namespace scrgrab.Classes
 
             if (m_imageManager.Images.Count > 0)
             {
-                hr = m_imageManager.Images[0].Time.Hour;
+                hr = m_imageManager.Images[0].ImageDateTime.Hour;
             }
 
             // list available images
@@ -82,7 +82,7 @@ namespace scrgrab.Classes
                 int hr = (int)cbxTime.Items[cbxTime.SelectedIndex];
 
                 // find an image for this time and display it
-                int x = m_imageManager.indexOfByTime(hr);
+                int x = m_imageManager.IndexOfByTime(hr);
                 if (x > -1)
                     cbxImages.SelectedIndex = x;
             }
