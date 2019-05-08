@@ -9,9 +9,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("Activity Logger")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("scrgrab")]
+[assembly: AssemblyProduct("scrgrab.exe")]
 [assembly: AssemblyCopyright("Copyright © Ali Nouroozpour 2018,2019")]
-[assembly: AssemblyTrademark("BDS")]
+[assembly: AssemblyTrademark("scrgrab")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
