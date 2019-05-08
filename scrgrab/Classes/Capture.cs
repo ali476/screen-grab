@@ -54,8 +54,8 @@ namespace scrgrab.Classes
             {
                 using (Graphics g = Graphics.FromImage(bmp))
                 {
-                    g.CopyFromScreen(Screen.PrimaryScreen.Bounds.X,
-                                     Screen.PrimaryScreen.Bounds.Y,
+                    g.CopyFromScreen(screen.Bounds.X,
+                                     screen.Bounds.Y,
                                      0, 0, bmp.Size,
                                      CopyPixelOperation.SourceCopy);
 
