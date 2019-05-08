@@ -86,7 +86,6 @@
   <ItemGroup>
     <Compile Include="Classes\Capture.cs" />
     <Compile Include="Classes\Configuration.cs" />
-    <Compile Include="Classes\ImageInfo.cs" />
     <Compile Include="Classes\ImageManager.cs" />
     <Compile Include="Classes\Logger.cs" />
     <Compile Include="Classes\Screens.cs" />

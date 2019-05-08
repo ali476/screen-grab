@@ -62,7 +62,7 @@ namespace scrgrab
         void TimerFiredEvent()
         {
             CaptureScreen();
-            ImageManager.Enumerate(Configuration.WorkingFolder);
+            ImageManager.enumerate(Configuration.WorkingFolder);
         }
 
         void SystemEvents_PowerModeChanged(object sender, PowerModeChangedEventArgs e)
