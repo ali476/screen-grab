@@ -13,9 +13,9 @@ namespace scrgrab
     /// </summary>
     public partial class formMain : Form
     {
-        private bool closedFromMenu = false;
-        private bool firstStart = true;
-        private BDSTimer bdstimer;
+        private bool m_closedFromMenu = false;
+        private bool m_firstStart = true;
+        private BDSTimer m_bdstimer;
         // system events
         private PowerModeChangedEventHandler m_powerHandler;
 
@@ -51,12 +51,13 @@ namespace scrgrab
             this.notifyIcon.Icon = appIcon;
             notifyIcon.BalloonTipIcon = ToolTipIcon.None;
 
-            bdstimer = new BDSTimer(TimerFiredEvent, Configuration.StartTime, Configuration.EndTime, TimeSpan.FromMinutes(Configuration.Interval));
-            bdstimer.Start();
-            firstStart = false;
+            m_bdstimer = new BDSTimer(TimerFiredEvent, Configuration.StartTime, Configuration.EndTime, TimeSpan.FromMinutes(Configuration.Interval));
+            m_bdstimer.Start();
+            m_firstStart = false;
 
             m_powerHandler = new PowerModeChangedEventHandler(SystemEvents_PowerModeChanged);
             SystemEvents.PowerModeChanged += m_powerHandler;
+            SystemEvents.SessionEnding += new SessionEndingEventHandler(SystemEvent_SessionEndingHandler);
         }
 
         void TimerFiredEvent()
@@ -70,13 +71,18 @@ namespace scrgrab
             if (e.Mode == PowerModes.Suspend)
             {
                 Logger.Log(Configuration.WorkingFolder, "Power suspended");
-                bdstimer.Stop();
+                m_bdstimer.Stop();
             }
             else if (e.Mode == PowerModes.Resume)
             {
                 Logger.Log(Configuration.WorkingFolder, "Power resumed");
-                bdstimer.Start();
+                m_bdstimer.Start();
             }
+        }
+
+        void SystemEvent_SessionEndingHandler(object sender, SessionEndingEventArgs e)
+        {
+            Shutdown();
         }
 
         private void CaptureScreen()
@@ -87,8 +93,8 @@ namespace scrgrab
 
         private void MinimiseToTray()
         {
-            if (!firstStart)
-                firstStart = false;
+            if (!m_firstStart)
+                m_firstStart = false;
             notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
             notifyIcon.Visible = true;
             notifyIcon.ShowBalloonTip(500);
@@ -119,12 +125,12 @@ namespace scrgrab
             Configuration.SetOperationalTo((int)comboHTo.SelectedItem, (int)comboMTo.SelectedItem);
             Configuration.Log();
             // re-set the timer
-            bdstimer.Lock();
-            bdstimer.StartTime = Configuration.StartTime;
-            bdstimer.EndTime = Configuration.EndTime;
-            bdstimer.Interval = TimeSpan.FromMinutes(Configuration.Interval);
-            bdstimer.Unlock();
-            bdstimer.Start();
+            m_bdstimer.Lock();
+            m_bdstimer.StartTime = Configuration.StartTime;
+            m_bdstimer.EndTime = Configuration.EndTime;
+            m_bdstimer.Interval = TimeSpan.FromMinutes(Configuration.Interval);
+            m_bdstimer.Unlock();
+            m_bdstimer.Start();
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -141,9 +147,15 @@ namespace scrgrab
             }
         }
 
+        private void Shutdown()
+        {
+            m_closedFromMenu = true;
+            Close();
+        }
+
         private void configuration_Changed(object sender, EventArgs e)
         {
-            if (!firstStart)
+            if (!m_firstStart)
                 SaveConfiguration();
         }
 
@@ -165,7 +177,7 @@ namespace scrgrab
 
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (!closedFromMenu)
+            if (!m_closedFromMenu)
             {
                 MinimiseToTray();
                 e.Cancel = true;
@@ -177,8 +189,7 @@ namespace scrgrab
 
         private void menuExit_Click(object sender, EventArgs e)
         {
-            closedFromMenu = true;
-            Close();
+            Shutdown();
         }
 
         private void LogNow_Clicked(object sender, EventArgs e)
@@ -188,10 +199,10 @@ namespace scrgrab
 
         private void ButtonView_Click(object sender, EventArgs e)
         {
-            bdstimer.Stop();
+            m_bdstimer.Stop();
             Viewer vu = new Viewer();
             vu.ShowDialog(this);
-            bdstimer.Start();
+            m_bdstimer.Start();
         }
     }
 }
